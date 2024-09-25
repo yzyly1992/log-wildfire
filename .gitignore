@@ -1,0 +1,27 @@
+# Python
+*.pyc
+__pycache__/
+venv/
+env/
+*.env
+.conda/
+
+# IDE
+.vscode/
+.idea/
+
+# Logs
+*.log
+
+# Dependency directories
+lib/
+libs/
+dist/
+build/
+egg-info/
+
+# test directories
+test/
+
+# macOS DS_Store
+.DS_Store
