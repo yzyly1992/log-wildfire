@@ -89,6 +89,7 @@ def raw_to_oklab(raw_image_path, output_path):
     imageio.imwrite(output_path, oklab.astype(np.float32))
 
 # Example usage:
-# raw_to_ucs("input.dng", "output_ucs.exr")
-# raw_to_lms("input.dng", "output_lms.exr")
-# raw_to_oklab("input.dng", "output_oklab.exr")
+# raw_to_xyz("test/DJI_20240806140437_0001.DNG", "output_ucs.exr")
+# raw_to_ucs("test/DJI_20240806140437_0001.DNG", "output_ucs.exr")
+# raw_to_lms("test/DJI_20240806140437_0001.DNG", "output_lms.exr")
+# raw_to_oklab("test/DJI_20240806140437_0001.DNG", "output_oklab.exr")
