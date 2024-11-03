@@ -5,11 +5,13 @@ import cv2
 import rawpy
 import imageio
 
+AUTO_BRIGHT_THR = 0.001
+
 def raw_to_srgb(raw_image_path, output_path):
     # Open the RAW image
     with rawpy.imread(raw_image_path) as raw:
         # Process the RAW image
-        rgb = raw.postprocess(use_camera_wb=True, no_auto_bright=True, output_bps=16)
+        rgb = raw.postprocess(gamma=(1,1), use_camera_wb=True, no_auto_bright=False, auto_bright_thr=AUTO_BRIGHT_THR, output_bps=16)
 
     # Resize the image
     height, width = rgb.shape[:2]
@@ -35,8 +37,7 @@ def raw_to_linear(raw_image_path, output_path):
     # Open the RAW image
     with rawpy.imread(raw_image_path) as raw:
         # Process the RAW image
-        rgb = raw.postprocess(use_camera_wb=True, no_auto_bright=True, output_bps=16)
-
+        rgb = raw.postprocess(gamma=(1,1), use_camera_wb=True, no_auto_bright=False, auto_bright_thr=AUTO_BRIGHT_THR, output_bps=16)
     # Resize the image
     height, width = rgb.shape[:2]
     new_width = 1024
@@ -50,7 +51,7 @@ def raw_to_log(raw_image_path, output_path):
     # Open the RAW image
     with rawpy.imread(raw_image_path) as raw:
         # Process the RAW image
-        rgb = raw.postprocess(use_camera_wb=True, no_auto_bright=True, output_bps=16)
+        rgb = raw.postprocess(gamma=(1,1), use_camera_wb=True, no_auto_bright=False, auto_bright_thr=AUTO_BRIGHT_THR, output_bps=16)
 
     # Resize the image
     height, width = rgb.shape[:2]
