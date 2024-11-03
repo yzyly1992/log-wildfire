@@ -13,8 +13,8 @@ def raw_to_srgb(raw_image_path, output_path):
 
     # Resize the image
     height, width = rgb.shape[:2]
-    new_height = 480
-    new_width = int(width * (new_height / height))
+    new_width = 1024
+    new_height = int(height * (new_width / width))
     rgb_resized = cv2.resize(rgb, (new_width, new_height), interpolation=cv2.INTER_AREA)
 
     # Convert to float32 and scale to [0, 1]
@@ -39,8 +39,8 @@ def raw_to_linear(raw_image_path, output_path):
 
     # Resize the image
     height, width = rgb.shape[:2]
-    new_height = 480
-    new_width = int(width * (new_height / height))
+    new_width = 1024
+    new_height = int(height * (new_width / width))
     rgb_resized = cv2.resize(rgb, (new_width, new_height), interpolation=cv2.INTER_AREA)
 
     # Save as 16-bit TIFF
@@ -54,8 +54,8 @@ def raw_to_log(raw_image_path, output_path):
 
     # Resize the image
     height, width = rgb.shape[:2]
-    new_height = 480
-    new_width = int(width * (new_height / height))
+    new_width = 1024
+    new_height = int(height * (new_width / width))
     rgb_resized = cv2.resize(rgb, (new_width, new_height), interpolation=cv2.INTER_AREA)
 
     # Convert to float32
@@ -70,7 +70,7 @@ def raw_to_log(raw_image_path, output_path):
     print("Max value: ", np.max(rgb_log))
 
     # Save as float32 EXR
-    imageio.imwrite(output_path, rgb_log, format="exr")
+    imageio.imwrite(output_path, rgb_log, format="tiff")
 
 # Example usage:
 # raw_to_srgb("test/DJI_20240806140437_0001.DNG", "test/output_srgb.jpg")
