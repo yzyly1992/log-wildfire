@@ -4,6 +4,8 @@ os.environ["OPENCV_IO_ENABLE_OPENEXR"]="1"
 import cv2
 import rawpy
 import imageio
+import Imath
+import OpenEXR
 
 AUTO_BRIGHT_THR = 0.001
 
@@ -69,11 +71,43 @@ def raw_to_log(raw_image_path, output_path):
 
     # output the max value
     print("Max value: ", np.max(rgb_log))
+    print("Float32 Max value: ", np.max(rgb_float))
 
     # Save as float32 EXR
-    imageio.imwrite(output_path, rgb_log, format="tiff")
+    save_16bit_exr_openexr(rgb_log, output_path)
+    
+def save_16bit_exr_openexr(image_array, output_path):
+    """
+    Save a numpy array as a 16-bit EXR image using OpenEXR.
+    
+    Parameters:
+    image_array: numpy.ndarray
+        Input image array with values in range [0, 1]
+    output_path: str
+        Path where the EXR file will be saved
+    """
+    # Ensure array is float32
+    image_array = image_array.astype(np.float32)
+    
+    # Get image dimensions
+    height, width, channels = image_array.shape
+    
+    # Create header
+    header = OpenEXR.Header(width, height)
+    half_chan = Imath.Channel(Imath.PixelType(Imath.PixelType.HALF))  # 16-bit float
+    header['channels'] = dict([(chan, half_chan) for chan in ['R', 'G', 'B']])
+    
+    # Create output file
+    out = OpenEXR.OutputFile(output_path, header)
+    
+    # Write pixel data
+    rgb = [image_array[..., i].tobytes() for i in range(channels)]
+    out.writePixels({'R': rgb[0], 'G': rgb[1], 'B': rgb[2]})
+    
+    # Close the file
+    out.close()
 
 # Example usage:
 # raw_to_srgb("test/DJI_20240806140437_0001.DNG", "test/output_srgb.jpg")
 # raw_to_linear("test/DJI_20240806140437_0001.DNG", "test/output_linear.tiff")
-# raw_to_log("test/DJI_20240806140437_0001.DNG", "test/output_log.exr")
+raw_to_log("test/DJI_20240806140437_0001.DNG", "test/output_log.exr")
