@@ -17,8 +17,8 @@ def batch_d_s_log(input_dir, d_output_dir, s_output_dir):
 
 
 if __name__ == "__main__":
-    input_dir = 'test/train_dng'  # Path to the input directory
-    d_output_dir = 'test/train_d_log'  # Path to the output directory
-    s_output_dir = 'test/train_s_log'  # Path to the output directory
+    input_dir = 'test/test_dng'  # Path to the input directory
+    d_output_dir = 'test/test_d_log'  # Path to the output directory
+    s_output_dir = 'test/test_s_log'  # Path to the output directory
 
     batch_d_s_log(input_dir, d_output_dir, s_output_dir)
