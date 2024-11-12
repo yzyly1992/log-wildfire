@@ -21,4 +21,4 @@ if __name__ == "__main__":
     d_output_dir = 'test/train_d_log'  # Path to the output directory
     s_output_dir = 'test/train_s_log'  # Path to the output directory
 
-    process_dng(input_dir, d_output_dir, s_output_dir)
+    batch_d_s_log(input_dir, d_output_dir, s_output_dir)

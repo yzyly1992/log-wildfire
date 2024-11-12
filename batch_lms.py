@@ -16,6 +16,6 @@ def batch_lms(input_dir, output_dir):
 
 if __name__ == "__main__":
     input_dir = 'test/train_dng'  # Path to the input directory
-    output_dir = 'test/train_xyz'  # Path to the output directory
+    output_dir = 'test/train_lms'  # Path to the output directory
 
     batch_lms(input_dir, output_dir)
