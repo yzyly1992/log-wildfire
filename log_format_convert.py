@@ -5,6 +5,8 @@ import rawpy
 import numpy as np
 import imageio
 
+AUTO_BRIGHT_THR = 0.001
+
 # Function to apply d-log curve
 def d_log_curve(linear_rgb):
     # Assuming d-log follows a curve similar to other log profiles
@@ -35,11 +37,11 @@ def process_dng(input_file, output_file_d_log, output_file_s_log):
     # Read raw image data from DNG
     with rawpy.imread(input_file) as raw:
         # Convert raw image to RGB float32 image (linear)
-        rgb = raw.postprocess(use_camera_wb=True, no_auto_bright=True, output_bps=16)
+        rgb = raw.postprocess(gamma=(1,1), use_camera_wb=True, no_auto_bright=False, auto_bright_thr=AUTO_BRIGHT_THR, output_bps=16)
     # Resize the image
     height, width = rgb.shape[:2]
-    new_height = 480
-    new_width = int(width * (new_height / height))
+    new_width = 1024
+    new_height = int(height * (new_width / width))
     rgb_resized = cv2.resize(rgb, (new_width, new_height), interpolation=cv2.INTER_AREA)
     linear_rgb = rgb_resized / 65535.0  # Normalize to range [0, 1]
 
@@ -52,19 +54,19 @@ def process_dng(input_file, output_file_d_log, output_file_s_log):
     # s_log_image_16bit = np.clip(s_log_image * 65535, 0, 65535).astype(np.uint16)
 
     # Save the 16-bit images
-    imageio.imwrite(output_file_d_log, d_log_image.astype(np.float32), format='exr')
-    imageio.imwrite(output_file_s_log, s_log_image.astype(np.float32), format='exr')
+    imageio.imwrite(output_file_d_log, d_log_image.astype(np.float32), format='tiff')
+    imageio.imwrite(output_file_s_log, s_log_image.astype(np.float32), format='tiff')
 
     # # Save to 8-bit PNG for visualization
     # imageio.imwrite(output_file_d_log, (d_log_image * 255).clip(0, 255).astype(np.uint8))
     # imageio.imwrite(output_file_s_log, (s_log_image * 255).clip(0, 255).astype(np.uint8))
 
 
-# Example usage
-input_dng = 'test/DJI_20240806140437_0001.DNG'  # Path to your DNG file
-output_d_log = 'test/output_d_log_16bit.exr'  # Output image with d-log applied (16-bit)
-output_s_log = 'test/output_s_log_16bit.exr'  # Output image with s-log3 applied (16-bit)
-# output_d_log = 'test/output_d_log_16bit.png'  # Output image with d-log applied (16-bit)
-# output_s_log = 'test/output_s_log_16bit.png'  # Output image with s-log3 applied (16-bit)
+# # Example usage
+# input_dng = 'test/DJI_20240806140437_0001.DNG'  # Path to your DNG file
+# output_d_log = 'test/output_d_log_16bit.exr'  # Output image with d-log applied (16-bit)
+# output_s_log = 'test/output_s_log_16bit.exr'  # Output image with s-log3 applied (16-bit)
+# # output_d_log = 'test/output_d_log_16bit.png'  # Output image with d-log applied (16-bit)
+# # output_s_log = 'test/output_s_log_16bit.png'  # Output image with s-log3 applied (16-bit)
 
-process_dng(input_dng, output_d_log, output_s_log)
+# process_dng(input_dng, output_d_log, output_s_log)

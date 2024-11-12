@@ -5,27 +5,31 @@ os.environ["OPENCV_IO_ENABLE_OPENEXR"]="1"
 import cv2
 import imageio
 
+AUTO_BRIGHT_THR = 0.001
+
 def raw_to_xyz(raw_image_path, output_path=None):
     with rawpy.imread(raw_image_path) as raw:
         # Process the RAW image directly to XYZ
         xyz = raw.postprocess(
-            use_camera_wb=True,
-            no_auto_bright=True,
+            gamma=(1,1), use_camera_wb=True, 
+            no_auto_bright=False, 
+            auto_bright_thr=AUTO_BRIGHT_THR,
             output_color=rawpy.ColorSpace.XYZ,
             output_bps=16
         )
 
     # Resize the image
     height, width = xyz.shape[:2]
-    new_height = 480
-    new_width = int(width * (new_height / height))
+    new_width = 1024
+    new_height = int(height * (new_width / width))
     xyz_resized = cv2.resize(xyz, (new_width, new_height), interpolation=cv2.INTER_AREA)
 
 
     # Normalize to [0, 1] range
     xyz_float = xyz_resized.astype(np.float32) / 65535.0
     # Save as EXR
-    if output_path is not None: imageio.imwrite(output_path, xyz_float, format="exr")
+    if output_path is not None: 
+        imageio.imwrite(output_path, xyz_float, format="tiff")
     return xyz_float
 
 def xyz_to_ucs(xyz):
@@ -76,17 +80,17 @@ def xyz_to_oklab(xyz):
 def raw_to_ucs(raw_image_path, output_path):
     xyz = raw_to_xyz(raw_image_path)
     ucs = xyz_to_ucs(xyz)
-    imageio.imwrite(output_path, ucs.astype(np.float32))
+    imageio.imwrite(output_path, ucs.astype(np.float32), format="tiff")
 
 def raw_to_lms(raw_image_path, output_path):
     xyz = raw_to_xyz(raw_image_path)
     lms = xyz_to_lms(xyz)
-    imageio.imwrite(output_path, lms.astype(np.float32))
+    imageio.imwrite(output_path, lms.astype(np.float32), format="tiff")
 
 def raw_to_oklab(raw_image_path, output_path):
     xyz = raw_to_xyz(raw_image_path)
     oklab = xyz_to_oklab(xyz)
-    imageio.imwrite(output_path, oklab.astype(np.float32))
+    imageio.imwrite(output_path, oklab.astype(np.float32), format="tiff")
 
 # Example usage:
 # raw_to_xyz("test/DJI_20240806140437_0001.DNG", "output_ucs.exr")
